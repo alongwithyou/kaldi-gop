@@ -22,6 +22,8 @@
 #include "util/common-utils.h"
 #include "gmm/am-diag-gmm.h"
 #include "decoder/training-graph-compiler.h"
+#include "fstext/fstext-utils.h"
+#include "gmm/am-diag-gmm.h"
 #include "gmm/decodable-am-diag-gmm.h"
 #include "hmm/transition-model.h"
 #include "decoder/faster-decoder.h"
@@ -30,10 +32,9 @@
 namespace kaldi {
 
 class GmmGop {
-public:
+ public:
   GmmGop() {}
-  void Init(std::string &tree_in_filename,
-            std::string &model_in_filename,
+  void Init(std::string &tree_in_filename, std::string &model_in_filename,
             std::string &lex_in_filename);
   void Compute(const Matrix<BaseFloat> &feats, const std::vector<int32> &transcript,
               BaseFloatMatrixWriter *phn_conf_writer,
@@ -45,7 +46,7 @@ public:
   Matrix<BaseFloat>& PhonemesFrameConf();
   Vector<BaseFloat>& get_phn_ll();
 
-protected:
+ protected:
   AmDiagGmm am_;
   TransitionModel tm_;
   ContextDependency ctx_dep_;

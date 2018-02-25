@@ -11,9 +11,12 @@ endif()
 # Build Kaldi
 SET(KALDI_ROOT "${CMAKE_SOURCE_DIR}/kaldi-5.1")
 SET(BUILD_JOBS 8)
+SET(ERR_CODE -1)
 if(NOT EXISTS ${KALDI_ROOT})
-  execute_process(COMMAND git clone -b 5.1 https://github.com/kaldi-asr/kaldi.git ${KALDI_ROOT})
-  execute_process(COMMAND extras/check_dependencies.sh WORKING_DIRECTORY ${KALDI_ROOT}/tools)
+  execute_process(COMMAND wget https://github.com/kaldi-asr/kaldi/archive/5.1.zip
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+  execute_process(COMMAND unzip 5.1.zip -d ${CMAKE_SOURCE_DIR}
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
   execute_process(COMMAND make -j ${BUILD_JOBS} WORKING_DIRECTORY ${KALDI_ROOT}/tools)
   execute_process(COMMAND ./configure WORKING_DIRECTORY ${KALDI_ROOT}/src)
   execute_process(COMMAND make depend -j ${BUILD_JOBS} WORKING_DIRECTORY ${KALDI_ROOT}/src)

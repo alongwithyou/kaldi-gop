@@ -100,7 +100,8 @@ BaseFloat GmmGop::ComputeGopNumeraViterbi(DecodableAmDiagGmmScaled &decodable,
   fst.SetStart(cur_state);
   for (size_t c = 0; c < tm_.GetTopo().NumPdfClasses(phone); c++) {
     int32 pdf_id;
-    KALDI_ASSERT(ctx_dep_.Compute(phoneseq, c, &pdf_id));
+    if (!ctx_dep_.Compute(phoneseq, c, &pdf_id))
+      KALDI_ERR << "Failed to obtain pdf_id.";
     int32 tid = pdfid_to_tid[pdf_id];
 
     StateId next_state = fst.AddState();
@@ -136,7 +137,8 @@ BaseFloat GmmGop::ComputeGopDenomin(DecodableAmDiagGmmScaled &decodable,
     StateId cur_state = start_state;
     for (size_t c = 0; c < pdfclass_num; c++) {
       int32 pdf_id;
-      KALDI_ASSERT(ctx_dep_.Compute(phoneseq, c, &pdf_id));
+      if (!ctx_dep_.Compute(phoneseq, c, &pdf_id))
+        KALDI_ERR << "Failed to obtain pdf_id.";
       int32 tid = pdfid_to_tid[pdf_id];
 
       StateId next_state = fst.AddState();

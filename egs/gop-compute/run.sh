@@ -16,6 +16,7 @@ fi
 # Enviroment preparation
 . ./cmd.sh
 . ./path.sh
+KALDI_ROOT=../../src/kaldi
 [ -h steps ] || ln -s $KALDI_ROOT/egs/wsj/s5/steps
 [ -h utils ] || ln -s $KALDI_ROOT/egs/wsj/s5/utils
 

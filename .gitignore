@@ -9,3 +9,5 @@ egs/gop-compute/waves_yesno
 egs/gop-compute/*.gz
 *.1
 *.zip
+src/kaldi-5.*
+.vscode

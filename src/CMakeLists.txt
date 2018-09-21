@@ -2,21 +2,22 @@ cmake_minimum_required (VERSION 2.6)
 project (kaldi-gop)
 
 # BLAS
-find_package(BLAS REQUIRED)
+find_package(BLAS)
 if(NOT BLAS_FOUND)
   message(FATAL_ERROR "Can't find BLAS. On Ubunbu, you may want to "
                 "install it by:\n  sudo apt-get install libatlas-dev")
 endif()
 
 # Build Kaldi
-SET(KALDI_ROOT "${CMAKE_SOURCE_DIR}/kaldi-5.1")
-SET(BUILD_JOBS 8)
+SET(KALDI_VERSION 5.3)
+SET(BUILD_JOBS 4)
+SET(KALDI_ROOT "${CMAKE_SOURCE_DIR}/kaldi-${KALDI_VERSION}")
 SET(ERR_CODE -1)
 if(NOT EXISTS ${KALDI_ROOT})
-  execute_process(COMMAND wget https://github.com/kaldi-asr/kaldi/archive/5.1.zip
+  execute_process(COMMAND wget https://github.com/kaldi-asr/kaldi/archive/${KALDI_VERSION}.zip
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-  execute_process(COMMAND unzip 5.1.zip -d ${CMAKE_SOURCE_DIR}
-                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+  execute_process(COMMAND unzip ${KALDI_VERSION}.zip -d ${CMAKE_SOURCE_DIR}
+                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
   execute_process(COMMAND make -j ${BUILD_JOBS} WORKING_DIRECTORY ${KALDI_ROOT}/tools)
   execute_process(COMMAND ./configure WORKING_DIRECTORY ${KALDI_ROOT}/src)
   execute_process(COMMAND make depend -j ${BUILD_JOBS} WORKING_DIRECTORY ${KALDI_ROOT}/src)
@@ -45,10 +46,10 @@ target_link_libraries(gop ${KALDI_ROOT}/src/matrix/kaldi-matrix.a)
 target_link_libraries(gop ${KALDI_ROOT}/src/base/kaldi-base.a)
 target_link_libraries(gop ${KALDI_ROOT}/tools/openfst/lib/libfst.a)
 target_link_libraries(gop dl.so)
-target_link_libraries(gop /usr/lib/libatlas.so.3)
-target_link_libraries(gop /usr/lib/libf77blas.so.3)
-target_link_libraries(gop /usr/lib/libcblas.so.3)
-target_link_libraries(gop /usr/lib/liblapack_atlas.so.3)
+find_library (LIBCBLAS libcblas.so.3)
+find_library (LIBLAPACK liblapack_atlas.so.3)
+target_link_libraries(gop ${LIBCBLAS})
+target_link_libraries(gop ${LIBLAPACK})
 
 # compute-gmm-gop
 add_executable(compute-gmm-gop gopbin/compute-gmm-gop.cc)

@@ -2,5 +2,6 @@
 
 utils/check_dependencies.sh || exit
 cd src/
-mkdir build && cd build
+[ -d build ] || mkdir build
+cd build
 cmake .. && make
